@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Outreach automation</title>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --surface: #1a2332;
+      --border: #2d3a4f;
+      --text: #e7ecf3;
+      --muted: #8b9cb3;
+      --accent: #5b9fd4;
+      --accent-dim: #3d7aad;
+      --danger: #e06c75;
+      --ok: #98c379;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      margin: 0;
+      padding: 1.5rem;
+      max-width: 52rem;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    h1 { font-size: 1.35rem; font-weight: 600; margin: 0 0 0.25rem; }
+    .sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+    fieldset {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 1.1rem;
+      margin: 0 0 1rem;
+      background: var(--surface);
+    }
+    legend {
+      padding: 0 0.5rem;
+      color: var(--muted);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 0.35rem;
+    }
+    label strong { color: var(--text); }
+    input[type="text"], input[type="url"], textarea {
+      width: 100%;
+      padding: 0.55rem 0.65rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+    textarea { min-height: 5.5rem; resize: vertical; }
+    input:focus, textarea:focus {
+      outline: 2px solid var(--accent-dim);
+      border-color: var(--accent);
+    }
+    .field { margin-bottom: 1rem; }
+    .field:last-child { margin-bottom: 0; }
+    .hint { font-size: 0.8rem; color: var(--muted); margin-top: 0.25rem; }
+    .row { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.75rem; }
+    input[type="checkbox"] { width: 1rem; height: 1rem; accent-color: var(--accent); }
+    button {
+      background: var(--accent);
+      color: var(--bg);
+      border: none;
+      padding: 0.65rem 1.25rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 0.5rem;
+    }
+    button:hover { background: var(--accent-dim); }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    #outcome {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      display: none;
+    }
+    #outcome.visible { display: block; }
+    #outcome.error { border-color: var(--danger); }
+    #outcome.ok { border-color: var(--ok); }
+    #outcome a { color: var(--accent); }
+    #outcome pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 0.8rem;
+      max-height: 20rem;
+      overflow: auto;
+      background: var(--bg);
+      padding: 0.75rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+    .links p { margin: 0.35rem 0; }
+  </style>
+</head>
+<body>
+  <h1>Outreach automation</h1>
+  <p class="sub">Fill every step below, then run. API keys are <strong>not</strong> entered here — add them to the project’s <code>.env</code> file (see README section <strong>API keys</strong>): <code>GROQ_API_KEY</code> (required), plus optional <code>HUNTER_API_KEY</code>, <code>SNOV_CLIENT_ID</code> + <code>SNOV_CLIENT_SECRET</code>, <code>APOLLO_API_KEY</code>. Google uses <code>credentials.json</code> + <code>token.json</code> like the CLI.</p>
+
+  <form id="form">
+    <fieldset>
+      <legend>Required</legend>
+      <div class="field">
+        <label for="url"><strong>Page URL</strong> — site to fetch</label>
+        <input type="text" id="url" name="url" placeholder="https://www.ycombinator.com/companies" required autocomplete="url" />
+        <p class="hint">Paste the full link from your browser. A scheme is added if you omit it.</p>
+      </div>
+      <div class="field">
+        <label for="extract_prompt"><strong>What to extract</strong> — describe rows for the spreadsheet</label>
+        <textarea id="extract_prompt" name="extract_prompt" placeholder="e.g. List only W26 companies. For each: founder names, company name, batch, company website URL." required></textarea>
+      </div>
+      <div class="field">
+        <label for="purpose_prompt"><strong>Outreach purpose</strong> — why you’re emailing</label>
+        <textarea id="purpose_prompt" name="purpose_prompt" placeholder="e.g. Invite founders to a small dinner in SF next month." required></textarea>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Optional</legend>
+      <div class="field">
+        <label for="name_prefix">Name prefix — short label for default Sheet/Doc titles</label>
+        <input type="text" id="name_prefix" name="name_prefix" placeholder="YC W26 outreach" />
+      </div>
+      <div class="field">
+        <label for="sheet_title">Spreadsheet title (overrides default)</label>
+        <input type="text" id="sheet_title" name="sheet_title" placeholder="Leave blank for auto title" />
+      </div>
+      <div class="field">
+        <label for="doc_title">Google Doc title (overrides default)</label>
+        <input type="text" id="doc_title" name="doc_title" placeholder="Leave blank for auto title" />
+      </div>
+      <div class="row">
+        <input type="checkbox" id="dry_run" name="dry_run" />
+        <label for="dry_run" style="margin:0">Dry run — no Google Sheet/Doc; show drafts here only</label>
+      </div>
+    </fieldset>
+
+    <button type="submit" id="submit">Run pipeline</button>
+  </form>
+
+  <div id="outcome" role="status"></div>
+
+  <script>
+    const form = document.getElementById("form");
+    const submit = document.getElementById("submit");
+    const outcome = document.getElementById("outcome");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      outcome.className = "";
+      outcome.innerHTML = "";
+      outcome.classList.remove("visible", "ok", "error");
+
+      const body = {
+        url: document.getElementById("url").value.trim(),
+        extract_prompt: document.getElementById("extract_prompt").value.trim(),
+        purpose_prompt: document.getElementById("purpose_prompt").value.trim(),
+        name_prefix: document.getElementById("name_prefix").value.trim(),
+        sheet_title: document.getElementById("sheet_title").value.trim() || null,
+        doc_title: document.getElementById("doc_title").value.trim() || null,
+        dry_run: document.getElementById("dry_run").checked,
+      };
+
+      submit.disabled = true;
+      submit.textContent = "Running…";
+
+      try {
+        const res = await fetch("/api/run", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+        const data = await res.json().catch(() => ({}));
+
+        outcome.classList.add("visible");
+        if (!res.ok) {
+          outcome.classList.add("error");
+          const msg = data.detail
+            ? (Array.isArray(data.detail) ? data.detail.map((d) => d.msg || JSON.stringify(d)).join(" ") : String(data.detail))
+            : res.statusText;
+          outcome.innerHTML = `<p><strong>Request error (${res.status}).</strong> ${escapeHtml(msg)}</p>`;
+          return;
+        }
+        if (data.success) {
+          outcome.classList.add("ok");
+          let html = `<p><strong>Done.</strong> Rows processed: ${data.rows_count}</p>`;
+          if (data.sheet_url && data.doc_url) {
+            html += `<div class="links"><p><a href="${data.sheet_url}" target="_blank" rel="noopener">Open Google Sheet</a></p>`;
+            html += `<p><a href="${data.doc_url}" target="_blank" rel="noopener">Open Google Doc</a></p></div>`;
+          }
+          if (data.dry_run_text) {
+            html += `<p class="hint">Dry run output:</p><pre>${escapeHtml(data.dry_run_text)}</pre>`;
+          }
+          outcome.innerHTML = html;
+        } else {
+          outcome.classList.add("error");
+          let html = `<p><strong>Failed.</strong> ${escapeHtml(data.error || "Unknown error")}</p>`;
+          if (data.extract_debug) {
+            html += `<p class="hint">Model output (debug):</p><pre>${escapeHtml(data.extract_debug)}</pre>`;
+          }
+          outcome.innerHTML = html;
+        }
+      } catch (err) {
+        outcome.classList.add("visible", "error");
+        outcome.innerHTML = `<p><strong>Request failed.</strong> Is the server running? (${escapeHtml(String(err.message))})</p>`;
+      } finally {
+        submit.disabled = false;
+        submit.textContent = "Run pipeline";
+      }
+    });
+
+    function escapeHtml(s) {
+      const d = document.createElement("div");
+      d.textContent = s;
+      return d.innerHTML;
+    }
+  </script>
+</body>
+</html>

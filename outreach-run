@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Run the CLI using the project venv — no global install or activate required.
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")" && pwd)"
+if [[ -x "$ROOT/.venv/bin/python" ]]; then
+  exec "$ROOT/.venv/bin/python" -m outreach.cli "$@"
+fi
+echo "outreach-automation: no .venv found at $ROOT/.venv" >&2
+echo "Run: python3 -m venv .venv && .venv/bin/pip install -r requirements.txt && .venv/bin/pip install -e ." >&2
+exit 1

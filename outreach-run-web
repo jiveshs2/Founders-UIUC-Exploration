@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Start the local web UI (http://127.0.0.1:8765).
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")" && pwd)"
+if [[ -x "$ROOT/.venv/bin/python" ]]; then
+  exec "$ROOT/.venv/bin/python" -m outreach.web
+fi
+echo "No .venv at $ROOT/.venv — create it and pip install -r requirements.txt" >&2
+exit 1
