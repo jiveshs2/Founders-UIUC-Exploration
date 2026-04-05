@@ -2,6 +2,8 @@
 
 CLI pipeline: fetch a web page, use Groq to extract structured rows from your instructions, optionally find company emails via Hunter.io, generate draft outreach with Groq, then write a **Google Sheet** and **Google Doc** for review.
 
+**Teammates:** start with **[TEAM_SETUP.md](TEAM_SETUP.md)** (clone from Git, install, create your own API keys and Google OAuth files).
+
 ## Setup
 
 1. Create a Python 3.10+ virtual environment and install dependencies:
