@@ -6,11 +6,11 @@ Pulls companies from a webpage, finds contact emails, and drafts personalized ou
 
 ## Setup (One Time)
 
-### 1. Download the code
+### 1. Install Git (Windows only — Mac already has it)
 
-1. Go to **https://github.com/jiveshs2/Founders-UIUC-Exploration**
-2. Click the green **Code** button → **Download ZIP**
-3. Unzip it and move the folder to your **Desktop**
+**Windows:** Download and install Git from **https://git-scm.com**. Use all the default options in the installer.
+
+**Mac:** Git is pre-installed. Nothing to do.
 
 ### 2. Install Python (skip if you already have it)
 
@@ -26,13 +26,24 @@ python --version
 ```
 If you see a version number (3.10+), skip ahead. Otherwise, download Python from **https://www.python.org/downloads/** — during install, **check "Add Python to PATH"**.
 
-### 3. Install the app
+### 3. Clone the repo
 
-Open Terminal (Mac) or Command Prompt (Windows) and run these commands one at a time:
+Open Terminal (Mac) or Command Prompt (Windows) and run:
+
+```
+cd ~/Desktop
+git clone https://github.com/jiveshs2/Founders-UIUC-Exploration.git
+```
+
+This creates a folder called `Founders-UIUC-Exploration` on your Desktop.
+
+### 4. Install the app
+
+Run these commands one at a time:
 
 **Mac:**
 ```
-cd ~/Desktop/Founders-UIUC-Exploration-main
+cd ~/Desktop/Founders-UIUC-Exploration
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
 .venv/bin/pip install -e .
@@ -41,7 +52,7 @@ python3 -m venv .venv
 
 **Windows:**
 ```
-cd %USERPROFILE%\Desktop\Founders-UIUC-Exploration-main
+cd %USERPROFILE%\Desktop\Founders-UIUC-Exploration
 python -m venv .venv
 .venv\Scripts\pip install -r requirements.txt
 .venv\Scripts\pip install -e .
@@ -50,7 +61,7 @@ python -m venv .venv
 
 Each command may take a minute — wait for it to finish before running the next one.
 
-### 4. Get your AI keys (free)
+### 5. Get your AI keys (free)
 
 You need at least one. We recommend getting both so the app has a backup.
 
@@ -64,18 +75,18 @@ You need at least one. We recommend getting both so the app has a backup.
 2. Click **Create API key**
 3. Copy the key (starts with `AIza`)
 
-### 5. Set up your config file
+### 6. Set up your config file
 
 **Mac:**
 ```
-cd ~/Desktop/Founders-UIUC-Exploration-main
+cd ~/Desktop/Founders-UIUC-Exploration
 cp .env.example .env
 open -e .env
 ```
 
 **Windows:**
 ```
-cd %USERPROFILE%\Desktop\Founders-UIUC-Exploration-main
+cd %USERPROFILE%\Desktop\Founders-UIUC-Exploration
 copy .env.example .env
 notepad .env
 ```
@@ -96,13 +107,13 @@ Save and close the file.
 
 **Mac:**
 ```
-cd ~/Desktop/Founders-UIUC-Exploration-main
+cd ~/Desktop/Founders-UIUC-Exploration
 .venv/bin/outreach-web
 ```
 
 **Windows:**
 ```
-cd %USERPROFILE%\Desktop\Founders-UIUC-Exploration-main
+cd %USERPROFILE%\Desktop\Founders-UIUC-Exploration
 .venv\Scripts\outreach-web
 ```
 
@@ -175,9 +186,34 @@ Always restart the app after editing `.env`.
 
 ---
 
+## Getting Updates
+
+When the app is updated, open Terminal (Mac) or Command Prompt (Windows) and run:
+
+```
+cd ~/Desktop/Founders-UIUC-Exploration
+git pull
+```
+
+That's it — you now have the latest version. If dependencies changed, also run:
+
+**Mac:**
+```
+.venv/bin/pip install -r requirements.txt
+```
+
+**Windows:**
+```
+.venv\Scripts\pip install -r requirements.txt
+```
+
+Your `.env` file and keys are untouched — they stay on your machine.
+
+---
+
 ## For Teams
 
-Everyone clones the repo and follows this README on their own computer. Each person keeps their own `.env` and `credentials.json` — never share or commit these files.
+Everyone follows this README on their own computer. Each person keeps their own `.env` and `credentials.json` — never share or commit these files.
 
 ---
 
