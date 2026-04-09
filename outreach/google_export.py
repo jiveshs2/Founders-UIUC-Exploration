@@ -18,18 +18,44 @@ CREDENTIALS_FILE = ROOT / "credentials.json"
 TOKEN_FILE = ROOT / "token.json"
 
 
+def google_credentials_help() -> str:
+    """Human-readable steps when credentials.json is missing."""
+    return (
+        f"Google export needs credentials.json in:\n  {CREDENTIALS_FILE}\n\n"
+        "That file comes from Google Cloud (Desktop OAuth client). "
+        "Step-by-step: open GETTING_STARTED.md in this project → section “Google credentials.json”.\n\n"
+        "Or use Dry run to preview without Google."
+    )
+
+
+def credentials_ready() -> bool:
+    return CREDENTIALS_FILE.is_file()
+
+
 def get_credentials() -> Credentials:
     creds: Credentials | None = None
     if TOKEN_FILE.exists():
-        creds = Credentials.from_authorized_user_file(str(TOKEN_FILE), SCOPES)
+        try:
+            creds = Credentials.from_authorized_user_file(str(TOKEN_FILE), SCOPES)
+        except Exception:
+            creds = None
+            try:
+                TOKEN_FILE.unlink(missing_ok=True)
+            except OSError:
+                pass
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
+            try:
+                creds.refresh(Request())
+            except Exception:
+                creds = None
+                try:
+                    TOKEN_FILE.unlink(missing_ok=True)
+                except OSError:
+                    pass
+        if not creds or not creds.valid:
             if not CREDENTIALS_FILE.exists():
-                raise FileNotFoundError(
-                    f"Missing {CREDENTIALS_FILE}. Download OAuth Desktop credentials from Google Cloud Console."
-                )
+                raise FileNotFoundError(google_credentials_help()) from None
             flow = InstalledAppFlow.from_client_secrets_file(str(CREDENTIALS_FILE), SCOPES)
             creds = flow.run_local_server(port=0)
         TOKEN_FILE.write_text(creds.to_json(), encoding="utf-8")

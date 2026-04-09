@@ -3,6 +3,7 @@
 .env.*.bak
 credentials.json
 token.json
+outreach_msal_cache.json
 __pycache__/
 *.pyc
 .venv/

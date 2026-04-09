@@ -9,9 +9,9 @@ from pydantic import BaseModel, Field, field_validator
 class LeadRow(BaseModel):
     """Normalized row after extraction; optional fields filled during enrichment / generation."""
 
-    founder_name: str = ""
     company_name: str = ""
-    batch: str = ""
+    founder_name: str = ""
+    industry: str = ""
     company_website: str = ""
     notes: str = ""
 

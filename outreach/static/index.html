@@ -3,163 +3,318 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Outreach automation</title>
+  <title>Founders outreach</title>
   <style>
     :root {
-      --bg: #0f1419;
-      --surface: #1a2332;
-      --border: #2d3a4f;
-      --text: #e7ecf3;
-      --muted: #8b9cb3;
-      --accent: #5b9fd4;
-      --accent-dim: #3d7aad;
-      --danger: #e06c75;
-      --ok: #98c379;
+      --bg: #0c0e12;
+      --surface: #151a22;
+      --border: #2a3344;
+      --text: #e8eaed;
+      --muted: #8b96a8;
+      --accent: #4a9eff;
+      --accent-hover: #3a8eef;
+      --danger: #f07178;
+      --ok: #89ca78;
     }
     * { box-sizing: border-box; }
     body {
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
       background: var(--bg);
       color: var(--text);
-      line-height: 1.5;
+      line-height: 1.45;
       margin: 0;
-      padding: 1.5rem;
-      max-width: 52rem;
+      padding: 1.75rem 1.25rem 2.5rem;
+      max-width: 36rem;
       margin-left: auto;
       margin-right: auto;
     }
-    h1 { font-size: 1.35rem; font-weight: 600; margin: 0 0 0.25rem; }
-    .sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
-    fieldset {
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 650;
+      margin: 0 0 0.2rem;
+      letter-spacing: -0.02em;
+    }
+    .lead {
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin: 0 0 1.25rem;
+    }
+    .env-note {
+      background: linear-gradient(145deg, #1a2330 0%, #121820 100%);
       border: 1px solid var(--border);
       border-radius: 10px;
-      padding: 1rem 1.1rem;
+      padding: 0.85rem 1rem;
+      margin-bottom: 1.25rem;
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+    .env-note strong { color: var(--text); }
+    .env-note code {
+      font-size: 0.84em;
+      background: var(--bg);
+      padding: 0.12em 0.35em;
+      border-radius: 4px;
+      color: var(--accent);
+    }
+    fieldset {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.05rem;
       margin: 0 0 1rem;
       background: var(--surface);
     }
     legend {
-      padding: 0 0.5rem;
+      padding: 0 0.45rem;
       color: var(--muted);
-      font-size: 0.8rem;
+      font-size: 0.72rem;
+      font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.06em;
     }
-    label {
-      display: block;
-      font-size: 0.85rem;
-      color: var(--muted);
-      margin-bottom: 0.35rem;
-    }
+    label { display: block; font-size: 0.86rem; color: var(--muted); margin-bottom: 0.38rem; }
     label strong { color: var(--text); }
-    input[type="text"], input[type="url"], textarea {
+    .label-row { font-size: 0.86rem; color: var(--muted); margin-bottom: 0.45rem; }
+    .label-row strong { color: var(--text); }
+    input[type="text"], textarea {
       width: 100%;
       padding: 0.55rem 0.65rem;
-      border-radius: 6px;
+      border-radius: 8px;
       border: 1px solid var(--border);
       background: var(--bg);
       color: var(--text);
       font-size: 0.95rem;
     }
-    textarea { min-height: 5.5rem; resize: vertical; }
+    textarea { min-height: 4.2rem; resize: vertical; }
+    #event_description { min-height: 6.5rem; }
     input:focus, textarea:focus {
-      outline: 2px solid var(--accent-dim);
+      outline: 2px solid rgba(74, 158, 255, 0.35);
       border-color: var(--accent);
     }
-    .field { margin-bottom: 1rem; }
+    .field { margin-bottom: 0.95rem; }
     .field:last-child { margin-bottom: 0; }
-    .hint { font-size: 0.8rem; color: var(--muted); margin-top: 0.25rem; }
-    .row { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.75rem; }
-    input[type="checkbox"] { width: 1rem; height: 1rem; accent-color: var(--accent); }
+    .hint { font-size: 0.76rem; color: var(--muted); margin-top: 0.35rem; opacity: 0.92; }
+    .tone-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem 0.9rem;
+      margin-top: 0.4rem;
+    }
+    .tone-item {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin: 0;
+    }
+    .tone-item label { margin: 0; cursor: pointer; color: var(--text); font-size: 0.86rem; }
+    .tone-item input { width: 1rem; height: 1rem; accent-color: var(--accent); cursor: pointer; }
+    .row { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.65rem; }
+    .row label { margin: 0; cursor: pointer; color: var(--text); font-size: 0.88rem; }
     button {
       background: var(--accent);
-      color: var(--bg);
+      color: #081018;
       border: none;
-      padding: 0.65rem 1.25rem;
-      border-radius: 8px;
+      padding: 0.72rem 1.4rem;
+      border-radius: 9px;
       font-size: 0.95rem;
-      font-weight: 600;
+      font-weight: 650;
       cursor: pointer;
-      margin-top: 0.5rem;
+      margin-top: 0.25rem;
+      width: 100%;
     }
-    button:hover { background: var(--accent-dim); }
-    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    button:hover { background: var(--accent-hover); }
+    button:disabled { opacity: 0.45; cursor: not-allowed; }
     #outcome {
-      margin-top: 1.5rem;
+      margin-top: 1.25rem;
       padding: 1rem;
-      border-radius: 10px;
+      border-radius: 12px;
       border: 1px solid var(--border);
       background: var(--surface);
       display: none;
     }
     #outcome.visible { display: block; }
-    #outcome.error { border-color: var(--danger); }
-    #outcome.ok { border-color: var(--ok); }
+    #outcome.error { border-color: rgba(240, 113, 120, 0.5); }
+    #outcome.ok { border-color: rgba(137, 202, 120, 0.45); }
     #outcome a { color: var(--accent); }
     #outcome pre {
       white-space: pre-wrap;
       word-break: break-word;
-      font-size: 0.8rem;
-      max-height: 20rem;
+      font-size: 0.78rem;
+      max-height: 18rem;
       overflow: auto;
       background: var(--bg);
       padding: 0.75rem;
-      border-radius: 6px;
+      border-radius: 8px;
       border: 1px solid var(--border);
     }
     .links p { margin: 0.35rem 0; }
+    pre.err-detail {
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 0.8rem;
+      margin: 0.35rem 0 0;
+      color: var(--muted);
+      font-family: ui-monospace, SFMono-Regular, monospace;
+    }
+    code { font-size: 0.85em; background: var(--bg); padding: 0.08em 0.32em; border-radius: 4px; }
   </style>
 </head>
 <body>
-  <h1>Outreach automation</h1>
-  <p class="sub">Fill every step below, then run. API keys are <strong>not</strong> entered here — add them to the project’s <code>.env</code> file (see README section <strong>API keys</strong>): <code>GROQ_API_KEY</code> (required), plus optional <code>HUNTER_API_KEY</code>, <code>SNOV_CLIENT_ID</code> + <code>SNOV_CLIENT_SECRET</code>, <code>APOLLO_API_KEY</code>. Google uses <code>credentials.json</code> + <code>token.json</code> like the CLI.</p>
+  <h1>Founders outreach</h1>
+  <p class="lead">Turn a company listing page into draft emails.</p>
+
+  <div class="env-note">
+    <strong>API keys are not entered here.</strong> Put them in the <code>.env</code> file in the
+    <code>outreach-automation</code> folder (open <strong>GETTING_STARTED.md</strong> there for simple steps).
+    Restart this app after you change <code>.env</code>.
+  </div>
 
   <form id="form">
     <fieldset>
-      <legend>Required</legend>
+      <legend>Page</legend>
       <div class="field">
-        <label for="url"><strong>Page URL</strong> — site to fetch</label>
-        <input type="text" id="url" name="url" placeholder="https://www.ycombinator.com/companies" required autocomplete="url" />
-        <p class="hint">Paste the full link from your browser. A scheme is added if you omit it.</p>
+        <label for="url"><strong>Link to the list</strong></label>
+        <input type="text" id="url" name="url" placeholder="https://…" required autocomplete="url" />
       </div>
       <div class="field">
-        <label for="extract_prompt"><strong>What to extract</strong> — describe rows for the spreadsheet</label>
-        <textarea id="extract_prompt" name="extract_prompt" placeholder="e.g. List only W26 companies. For each: founder names, company name, batch, company website URL." required></textarea>
+        <label for="scope_hint"><strong>Who to include</strong></label>
+        <textarea id="scope_hint" name="scope_hint" placeholder="e.g. Only Fall 2025 batch. Skip investors." required></textarea>
+        <p class="hint">Describe filters only (batch, region, etc.). Rows are filled automatically.</p>
       </div>
       <div class="field">
-        <label for="purpose_prompt"><strong>Outreach purpose</strong> — why you’re emailing</label>
-        <textarea id="purpose_prompt" name="purpose_prompt" placeholder="e.g. Invite founders to a small dinner in SF next month." required></textarea>
+        <label for="max_rows"><strong>Limit companies</strong> (optional)</label>
+        <input type="number" id="max_rows" name="max_rows" min="1" max="500" placeholder="e.g. 10" style="max-width:7rem" />
       </div>
     </fieldset>
 
     <fieldset>
-      <legend>Optional</legend>
+      <legend>Message</legend>
       <div class="field">
-        <label for="name_prefix">Name prefix — short label for default Sheet/Doc titles</label>
-        <input type="text" id="name_prefix" name="name_prefix" placeholder="YC W26 outreach" />
+        <label for="event_description"><strong>What you’re inviting them to</strong></label>
+        <textarea id="event_description" name="event_description" placeholder="Describe your event or ask." required></textarea>
       </div>
       <div class="field">
-        <label for="sheet_title">Spreadsheet title (overrides default)</label>
-        <input type="text" id="sheet_title" name="sheet_title" placeholder="Leave blank for auto title" />
+        <label for="whats_in_it_for_them"><strong>What’s in it for them to come?</strong> (optional)</label>
+        <textarea id="whats_in_it_for_them" name="whats_in_it_for_them" placeholder="Concrete value for the founder: who they'll meet, what they'll get, why it’s worth their time."></textarea>
       </div>
       <div class="field">
-        <label for="doc_title">Google Doc title (overrides default)</label>
-        <input type="text" id="doc_title" name="doc_title" placeholder="Leave blank for auto title" />
+        <span class="label-row"><strong>Tone</strong> (optional)</span>
+        <div class="tone-grid" id="tone_grid"></div>
       </div>
-      <div class="row">
-        <input type="checkbox" id="dry_run" name="dry_run" />
-        <label for="dry_run" style="margin:0">Dry run — no Google Sheet/Doc; show drafts here only</label>
+      <div class="field">
+        <label for="sign_off"><strong>Sign-off</strong> (optional)</label>
+        <textarea id="sign_off" name="sign_off" placeholder="e.g.\nBest,\nJivesh\nFounders @ UIUC"></textarea>
+        <p class="hint">This will be appended to every email (after the body, within the word limit).</p>
       </div>
     </fieldset>
 
-    <button type="submit" id="submit">Run pipeline</button>
+    <fieldset>
+      <legend>Save</legend>
+      <div class="field">
+        <span class="label-row"><strong>Where results go</strong></span>
+        <div class="tone-grid" style="flex-direction:column;align-items:stretch;gap:0.5rem">
+          <label class="tone-item" style="margin:0">
+            <input type="radio" name="export_mode" id="export_outlook" value="outlook" checked />
+            <span>Outlook drafts</span>
+          </label>
+          <label class="tone-item" style="margin:0">
+            <input type="radio" name="export_mode" id="export_google" value="google" />
+            <span>Google Sheet + Doc</span>
+          </label>
+        </div>
+        <p class="hint">If Outlook isn’t set up but Google is, we use Google automatically.</p>
+      </div>
+      <div id="google_export_fields">
+        <div class="field">
+          <label for="name_prefix">Label for titles (Google only, optional)</label>
+          <input type="text" id="name_prefix" name="name_prefix" placeholder="e.g. Feb outreach" />
+        </div>
+        <div class="field">
+          <label for="sheet_title">Sheet title override (optional)</label>
+          <input type="text" id="sheet_title" name="sheet_title" />
+        </div>
+        <div class="field">
+          <label for="doc_title">Doc title override (optional)</label>
+          <input type="text" id="doc_title" name="doc_title" />
+        </div>
+      </div>
+      <div class="row">
+        <input type="checkbox" id="dry_run" name="dry_run" />
+        <label for="dry_run">Dry run — show text here only</label>
+      </div>
+      <div class="field" style="margin-top:0.75rem">
+        <label for="max_words"><strong>Word limit per email</strong> (optional)</label>
+        <input type="number" id="max_words" name="max_words" min="20" max="400" placeholder="e.g. 100" style="max-width:7rem" />
+        <p class="hint">If left blank, emails are capped at 100 words by default.</p>
+      </div>
+    </fieldset>
+
+    <button type="submit" id="submit">Run</button>
   </form>
 
   <div id="outcome" role="status"></div>
 
   <script>
+    const TONES = [
+      "Formal",
+      "Professional",
+      "Friendly",
+      "Warm",
+      "Casual",
+      "Conversational",
+      "Personable",
+      "Persuasive",
+      "Urgent",
+      "Call-to-Action Focused",
+      "Motivational",
+      "Sales / Pitch Style",
+      "Informative",
+      "Neutral",
+      "Straightforward",
+      "Matter-of-Fact",
+      "Academic",
+      "Research-Oriented",
+      "Technical",
+      "Excited / Enthusiastic",
+      "Energetic",
+      "Community-Oriented",
+      "Inclusive",
+      "Promotional",
+      "Respectful",
+      "Direct",
+      "Inspirational",
+      "Storytelling",
+      "Gratitude-Focused",
+      "Reflective",
+      "Urgent but Polite",
+    ];
+    const toneGrid = document.getElementById("tone_grid");
+    for (const t of TONES) {
+      const id = "tone_" + t;
+      const wrap = document.createElement("div");
+      wrap.className = "tone-item";
+      const label = t;
+      wrap.innerHTML =
+        '<input type="checkbox" name="tone" id="' + id + '" value="' + t.toLowerCase() + '" />' +
+        '<label for="' + id + '">' + label + "</label>";
+      toneGrid.appendChild(wrap);
+    }
+
     const form = document.getElementById("form");
     const submit = document.getElementById("submit");
     const outcome = document.getElementById("outcome");
+    const googleExportFields = document.getElementById("google_export_fields");
+
+    function syncExportUI() {
+      const g = document.getElementById("export_google").checked;
+      googleExportFields.style.display = g ? "block" : "none";
+      const dry = document.getElementById("dry_run").checked;
+      submit.textContent = dry ? "Run (preview only)" : "Run";
+    }
+    document.querySelectorAll('input[name="export_mode"]').forEach((el) => {
+      el.addEventListener("change", syncExportUI);
+    });
+    document.getElementById("dry_run").addEventListener("change", syncExportUI);
+    syncExportUI();
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -167,18 +322,39 @@
       outcome.innerHTML = "";
       outcome.classList.remove("visible", "ok", "error");
 
+      const tones = Array.from(document.querySelectorAll('input[name="tone"]:checked')).map((cb) => cb.value);
+      const maxRaw = document.getElementById("max_rows").value.trim();
+      let maxRows = null;
+      if (maxRaw !== "") {
+        const n = parseInt(maxRaw, 10);
+        if (!Number.isNaN(n) && n >= 1) maxRows = Math.min(500, n);
+      }
+      const maxWordsRaw = document.getElementById("max_words").value.trim();
+      let maxWords = null;
+      if (maxWordsRaw !== "") {
+        const n = parseInt(maxWordsRaw, 10);
+        if (!Number.isNaN(n) && n >= 20) maxWords = Math.min(400, n);
+      }
+
+      const exportMode = document.getElementById("export_google").checked ? "google" : "outlook";
       const body = {
         url: document.getElementById("url").value.trim(),
-        extract_prompt: document.getElementById("extract_prompt").value.trim(),
-        purpose_prompt: document.getElementById("purpose_prompt").value.trim(),
+        scope_hint: document.getElementById("scope_hint").value.trim(),
+        event_description: document.getElementById("event_description").value.trim(),
+        whats_in_it_for_them: document.getElementById("whats_in_it_for_them").value.trim(),
+        tones,
+        sign_off: document.getElementById("sign_off").value.trim(),
         name_prefix: document.getElementById("name_prefix").value.trim(),
         sheet_title: document.getElementById("sheet_title").value.trim() || null,
         doc_title: document.getElementById("doc_title").value.trim() || null,
+        export_mode: exportMode,
         dry_run: document.getElementById("dry_run").checked,
+        max_rows: maxRows,
+        max_words: maxWords,
       };
 
       submit.disabled = true;
-      submit.textContent = "Running…";
+      submit.textContent = "Working…";
 
       try {
         const res = await fetch("/api/run", {
@@ -194,34 +370,37 @@
           const msg = data.detail
             ? (Array.isArray(data.detail) ? data.detail.map((d) => d.msg || JSON.stringify(d)).join(" ") : String(data.detail))
             : res.statusText;
-          outcome.innerHTML = `<p><strong>Request error (${res.status}).</strong> ${escapeHtml(msg)}</p>`;
+          outcome.innerHTML = "<p><strong>Request error (" + res.status + ").</strong> " + escapeHtml(msg) + "</p>";
           return;
         }
         if (data.success) {
           outcome.classList.add("ok");
-          let html = `<p><strong>Done.</strong> Rows processed: ${data.rows_count}</p>`;
+          let html = "<p><strong>Done.</strong> Companies processed: " + data.rows_count + "</p>";
+          if (data.outlook_drafts_count > 0) {
+            html += "<p>Open <strong>Outlook → Drafts</strong> (" + data.outlook_drafts_count + ").</p>";
+          }
           if (data.sheet_url && data.doc_url) {
-            html += `<div class="links"><p><a href="${data.sheet_url}" target="_blank" rel="noopener">Open Google Sheet</a></p>`;
-            html += `<p><a href="${data.doc_url}" target="_blank" rel="noopener">Open Google Doc</a></p></div>`;
+            html += '<div class="links"><p><a href="' + data.sheet_url + '" target="_blank" rel="noopener">Google Sheet</a></p>';
+            html += '<p><a href="' + data.doc_url + '" target="_blank" rel="noopener">Google Doc</a></p></div>';
           }
           if (data.dry_run_text) {
-            html += `<p class="hint">Dry run output:</p><pre>${escapeHtml(data.dry_run_text)}</pre>`;
+            html += '<pre>' + escapeHtml(data.dry_run_text) + "</pre>";
           }
           outcome.innerHTML = html;
         } else {
           outcome.classList.add("error");
-          let html = `<p><strong>Failed.</strong> ${escapeHtml(data.error || "Unknown error")}</p>`;
+          let html = "<p><strong>Something went wrong.</strong></p><pre class=\"err-detail\">" + escapeHtml(data.error || "Unknown error") + "</pre>";
           if (data.extract_debug) {
-            html += `<p class="hint">Model output (debug):</p><pre>${escapeHtml(data.extract_debug)}</pre>`;
+            html += "<p class=\"hint\">Model reply (debug):</p><pre>" + escapeHtml(data.extract_debug) + "</pre>";
           }
           outcome.innerHTML = html;
         }
       } catch (err) {
         outcome.classList.add("visible", "error");
-        outcome.innerHTML = `<p><strong>Request failed.</strong> Is the server running? (${escapeHtml(String(err.message))})</p>`;
+        outcome.innerHTML = "<p><strong>Could not reach the app.</strong> Start the server with <code>outreach-web</code>.</p>";
       } finally {
         submit.disabled = false;
-        submit.textContent = "Run pipeline";
+        syncExportUI();
       }
     });
 

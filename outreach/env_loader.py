@@ -76,7 +76,6 @@ def groq_key_missing_message() -> str:
 
     return (
         f"GROQ_API_KEY is not set.{ex_hint}{diag} "
-        f"Expected file: {env_file} with one line like GROQ_API_KEY=gsk_... "
-        "Or export a non-empty GROQ_API_KEY in the shell, then restart the server. "
-        "Create a key at https://console.groq.com"
+        f"Open {env_file}, add: GROQ_API_KEY=your_key (no spaces around =). "
+        "See GETTING_STARTED.md. Create a key at https://console.groq.com — then restart the app."
     )
