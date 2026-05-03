@@ -117,6 +117,22 @@ def enrich_rows_email(
     return out
 
 
+def _generic_mailbox_enabled() -> bool:
+    """Final-resort guess of common mailboxes (info@, hello@, contact@)."""
+    v = os.environ.get("OUTREACH_GENERIC_MAILBOX_FALLBACK", "1").strip().lower()
+    return v not in ("0", "false", "no", "off")
+
+
+_COMMON_GENERIC_LOCALS = ("info", "hello", "contact", "team", "hi", "press", "support")
+
+
+def _generic_mailbox_guess(domain: str) -> str | None:
+    d = (domain or "").strip().lower().lstrip(".")
+    if not d:
+        return None
+    return f"{_COMMON_GENERIC_LOCALS[0]}@{d}"
+
+
 def _try_single_domain(
     row: LeadRow,
     domain: str,
@@ -152,6 +168,11 @@ def _try_single_domain(
         email, pattern_last = try_pattern_verified_email(fn, ln, domain, founder_raw=founder)
         if email:
             src = pattern_last
+
+    if not email and _generic_mailbox_enabled():
+        guess = _generic_mailbox_guess(domain)
+        if guess:
+            email, src = guess, "generic_mailbox_guess"
 
     return email, src, api_last or pattern_last
 

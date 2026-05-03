@@ -124,18 +124,36 @@ def _build_verifier_chain() -> list[tuple[str, VerifierFn]]:
     return chain
 
 
+def _unverified_fallback_enabled() -> bool:
+    """Return a best-guess pattern even when no verifier API key is configured."""
+    v = os.environ.get("OUTREACH_PATTERN_GUESS_UNVERIFIED", "1").strip().lower()
+    return v not in ("0", "false", "no", "off")
+
+
+def _best_unverified_guess(first: str, last: str, domain: str) -> str | None:
+    """The single most likely format. ``first.last@domain`` is the modal pattern."""
+    first = (first or "").strip().lower()
+    last = (last or "").strip().lower()
+    d = (domain or "").strip().lower().strip(".")
+    if not first or not d:
+        return None
+    if last:
+        return f"{first}.{last}@{d}"
+    return f"{first}@{d}"
+
+
 def try_pattern_verified_email(first: str, last: str, domain: str, founder_raw: str = "") -> tuple[str | None, str]:
     """
     If at least one verification API key is set, try guessed addresses in order
-    until a verifier returns True. Without keys, returns (None, …).
+    until a verifier returns True. Without keys, optionally return the single
+    most-likely guess (``first.last@domain``) marked as unverified, so the user
+    has a starting point instead of nothing.
     """
     v = os.environ.get("OUTREACH_PATTERN_GUESS", "1").strip().lower()
     if v in ("0", "false", "no", "off"):
         return None, "pattern_guess_disabled"
 
     verifiers = _build_verifier_chain()
-    if not verifiers:
-        return None, "pattern_verify_no_api_keys"
 
     candidates = candidate_emails(first, last, domain)
     if founder_raw:
@@ -143,6 +161,22 @@ def try_pattern_verified_email(first: str, last: str, domain: str, founder_raw: 
             for em in candidate_emails(fn, ln, domain):
                 if em not in candidates:
                     candidates.append(em)
+
+    if not verifiers:
+        if not _unverified_fallback_enabled():
+            return None, "pattern_verify_no_api_keys"
+        # Pick the best single guess from the primary founder name first, then
+        # fall through to the first secondary founder if the primary lacks a name.
+        guess = _best_unverified_guess(first, last, domain)
+        if not guess and founder_raw:
+            for fn, ln in founder_name_pairs(founder_raw):
+                guess = _best_unverified_guess(fn, ln, domain)
+                if guess:
+                    break
+        if guess:
+            return guess, "pattern_guess_unverified"
+        return None, "pattern_no_candidates"
+
     if not candidates:
         return None, "pattern_no_candidates"
 
@@ -159,4 +193,10 @@ def try_pattern_verified_email(first: str, last: str, domain: str, founder_raw: 
                 return em, f"pattern_guess_{vname}"
             if ok is False:
                 break
+    # Verifiers ran but rejected everything. As a last resort, surface the
+    # single most-likely format if the user has opted in.
+    if _unverified_fallback_enabled():
+        guess = _best_unverified_guess(first, last, domain)
+        if guess:
+            return guess, "pattern_guess_unverified"
     return None, "pattern_verify_no_match"
